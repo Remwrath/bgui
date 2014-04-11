@@ -15,7 +15,7 @@ class Frame(Widget):
 				}
 
 	def __init__(self, parent, name=None, border=None, aspect=None, size=[1, 1], pos=[0, 0],
-				sub_theme='', options=BGUI_DEFAULT):
+				clip=False, sub_theme='', options=BGUI_DEFAULT):
 		"""
 		:param parent: the widget's parent
 		:param name: the name of the widget
@@ -46,7 +46,8 @@ class Frame(Widget):
 			self.border = border
 		else:
 			self.border = self.theme['BorderSize']
-
+		self.clip = clip
+		
 	def _draw(self):
 		"""Draw the frame"""
 
@@ -82,5 +83,10 @@ class Frame(Widget):
 
 			glLineWidth(1.0)
 			glPolygonMode(GL_FRONT, GL_FILL)
-
-		Widget._draw(self)
+		if self.clip:
+			glEnable( GL_SCISSOR_TEST )
+			glScissor(int(self.position[0]),int(self.position[1]), int(self.size[0]),int(self.size[1]))
+			Widget._draw(self)
+			glDisable( GL_SCISSOR_TEST )
+		else:
+			Widget._draw(self)
