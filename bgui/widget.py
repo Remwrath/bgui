@@ -145,7 +145,7 @@ class Widget:
 	theme_section = 'Widget'
 	theme_options = {}
 
-	def __init__(self, parent, name=None, aspect=None, size=[0, 0], pos=[0, 0], sub_theme='',
+	def __init__(self, parent, name=None, aspect=None, size=[1, 1], pos=[0, 0], sub_theme='',
 			options=BGUI_DEFAULT):
 		"""
 		:param parent: the widget's parent
@@ -175,7 +175,7 @@ class Widget:
 		self._generate_theme()
 
 		self._hover = False
-		
+
 		#: Whether or not the widget should accept events
 		self.frozen = False
 
@@ -358,8 +358,10 @@ class Widget:
 
 	@parent.setter
 	def parent(self, value):
+		self._parent._remove_widget(self)
 		self._parent = value
-		self._update_position(self._base_size, self._base_value)
+		self._parent._attach_widget(self)
+		self._update_position(self._base_size, self._base_pos)
 
 	@property
 	def system(self):
